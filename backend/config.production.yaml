@@ -1,4 +1,4 @@
-# Backend configuration for MonetizeAI Webinar
+# Production Backend configuration for MonetizeAI Webinar
 
 db_host: localhost
 db_port: 3306

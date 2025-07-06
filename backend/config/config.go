@@ -8,12 +8,16 @@ import (
 )
 
 type Config struct {
-	DBHost     string `mapstructure:"db_host"`
-	DBPort     string `mapstructure:"db_port"`
-	DBUser     string `mapstructure:"db_user"`
-	DBPassword string `mapstructure:"db_password"`
-	DBName     string `mapstructure:"db_name"`
-	ServerPort string `mapstructure:"server_port"`
+	DBHost         string   `mapstructure:"db_host"`
+	DBPort         string   `mapstructure:"db_port"`
+	DBUser         string   `mapstructure:"db_user"`
+	DBPassword     string   `mapstructure:"db_password"`
+	DBName         string   `mapstructure:"db_name"`
+	ServerPort     string   `mapstructure:"server_port"`
+	EnableHTTPS    bool     `mapstructure:"enable_https"`
+	SSLCertFile    string   `mapstructure:"ssl_cert_file"`
+	SSLKeyFile     string   `mapstructure:"ssl_key_file"`
+	AllowedOrigins []string `mapstructure:"allowed_origins"`
 }
 
 // LoadConfig loads config from config.yaml (preferred) or .env (fallback)

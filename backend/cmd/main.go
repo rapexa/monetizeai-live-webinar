@@ -48,17 +48,38 @@ func main() {
 
 	r := gin.Default()
 
-	// CORS middleware for frontend-backend connection
-	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"*"},
+	// CORS configuration
+	corsConfig := cors.Config{
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
-	}))
+	}
+
+	// Set allowed origins based on configuration
+	if len(cfg.AllowedOrigins) > 0 {
+		corsConfig.AllowOrigins = cfg.AllowedOrigins
+	} else {
+		// Default fallback
+		corsConfig.AllowOrigins = []string{"*"}
+	}
+
+	r.Use(cors.New(corsConfig))
 
 	routes.SetupRoutes(r, db)
 
 	log.Printf("Server running on port %s", cfg.ServerPort)
-	r.Run(":" + cfg.ServerPort)
+
+	// Start server with HTTPS if enabled
+	if cfg.EnableHTTPS {
+		log.Printf("Starting HTTPS server with SSL certificate")
+		if err := r.RunTLS(":"+cfg.ServerPort, cfg.SSLCertFile, cfg.SSLKeyFile); err != nil {
+			log.Fatalf("failed to start HTTPS server: %v", err)
+		}
+	} else {
+		log.Printf("Starting HTTP server")
+		if err := r.Run(":" + cfg.ServerPort); err != nil {
+			log.Fatalf("failed to start HTTP server: %v", err)
+		}
+	}
 }
